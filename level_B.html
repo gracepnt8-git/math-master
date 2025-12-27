@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B级特训：三个“二次”的关系</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.bootcdn.net/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #00695c; /* B级使用蓝绿色，代表逻辑与连接 */
+            --quiz: #1565c0;    /* 测试区蓝色 */
+            --remedy: #ff6f00;  /* 补救橙 */
+            --deep: #b71c1c;    /* 深度红 */
+            --bg: #e0f2f1;      /* 浅青背景 */
+            --card: #ffffff;
+        }
+
+        body { font-family: 'Segoe UI', 'PingFang SC', sans-serif; background: var(--bg); margin: 0; padding: 20px; line-height: 1.6; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        /* 场景切换 */
+        .scene { display: none; animation: fadeIn 0.5s; }
+        .scene.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 卡片样式 */
+        .card { background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        
+        h1, h2, h3 { margin-top: 0; color: #263238; }
+        
+        /* 按钮 */
+        .btn {
+            display: inline-block; padding: 12px 24px; border-radius: 6px; cursor: pointer; border: none; font-size: 1rem; color: white; transition: 0.2s;
+            width: 100%; text-align: left; margin-bottom: 10px;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary { background: var(--primary); text-align: center; font-weight: bold; width: auto; }
+        
+        .btn-opt { background: white; color: #333; border: 2px solid #e0e0e0; }
+        .btn-opt:hover { background: #b2dfdb; border-color: var(--primary); }
+        .btn-opt.selected { background: #b2dfdb; border-color: var(--primary); color: var(--primary); font-weight: bold; }
+        .disabled { pointer-events: none; opacity: 0.6; }
+
+        /* Phase 1 教学区 */
+        .study-header { border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 20px; }
+        .knowledge-point { background: #f1f8e9; border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .key-tag { background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-right: 5px; }
+
+        /* SVG 图示框 */
+        .svg-demo { text-align: center; margin: 10px 0; background: white; border-radius: 8px; padding: 10px; border: 1px solid #ddd; }
+
+        /* Phase 3 补救区 */
+        .remedy-header { background: #fff8e1; color: #ff6f00; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffe0b2; }
+        .deep-dive-box {
+            display: none; background: #ffebee; border: 2px dashed var(--deep); padding: 15px; border-radius: 8px; margin-top: 15px; animation: slideDown 0.5s;
+        }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+        .step-item { margin-bottom: 8px; padding-left: 10px; border-left: 3px solid var(--deep); }
+
+        /* 进度条 */
+        .progress-bar { height: 8px; background: #e0e0e0; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--quiz); width: 0%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div id="scene-study" class="scene active">
+        <div class="card">
+            <div class="study-header">
+                <h1>B级：打通任督二脉</h1>
+                <p>这一关的目标是打通“函数、方程、不等式”的壁垒。它们本质上是一回事！</p>
+            </div>
+            
+            <div class="knowledge-point">
+                <h3><span class="key-tag">关系1</span>函数 vs 方程</h3>
+                <p><strong>图像与 x 轴的交点 $\Leftrightarrow$ 方程的根</strong></p>
+                <ul>
+                    <li>函数 $y=ax^2+bx+c$ 与 x 轴交点横坐标为 $x_1, x_2$。</li>
+                    <li>对应方程 $ax^2+bx+c=0$ 的根就是 $x_1, x_2$。</li>
+                </ul>
+                <div class="svg-demo">
+                    <svg width="200" height="80" viewBox="-100 -40 200 80">
+                        <line x1="-90" y1="20" x2="90" y2="20" stroke="#333" stroke-width="1"/>
+                        <path d="M -50 -30 Q 0 80 50 -30" stroke="#00695c" stroke-width="2" fill="none"/>
+                        <circle cx="-35" cy="20" r="3" fill="red"/><text x="-45" y="40" font-size="10" fill="red">x1</text>
+                        <circle cx="35" cy="20" r="3" fill="red"/><text x="30" y="40" font-size="10" fill="red">x2</text>
+                        <text x="-90" y="10" font-size="10">y=0 (x轴)</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="knowledge-point">
+                <h3><span class="key-tag">关系2</span>函数 vs 不等式</h3>
+                <p><strong>图像的高低 $\Leftrightarrow$ 不等式的解集</strong></p>
+                <ul>
+                    <li>解 $ax^2+bx+c > 0$ $\rightarrow$ 找图像在 x 轴 <strong>上方</strong> 的部分。</li>
+                    <li>解 $ax^2+bx+c < 0$ $\rightarrow$ 找图像在 x 轴 <strong>下方</strong> 的部分。</li>
+                </ul>
+            </div>
+
+            <div class="knowledge-point">
+                <h3><span class="key-tag">关系3</span>两函数交点</h3>
+                <p>求直线 $y=kx+m$ 与抛物线 $y=ax^2...$ 的交点：</p>
+                <ul>
+                    <li><strong>方法：</strong> 联立方程组 $\rightarrow$ 消去 y $\rightarrow$ 解新的一元二次方程。</li>
+                    <li>交点个数由新方程的 $\Delta$ 决定。</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="startQuiz()">我理解了逻辑，开始测试 ➡</button>
+        </div>
+    </div>
+
+    <div id="scene-quiz" class="scene">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span style="font-weight:bold; color:var(--quiz);">B级 贯通测试</span>
+                <span id="quiz-progress-text">1 / 6</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="quiz-progress-fill"></div></div>
+
+            <h3 id="quiz-question-text">...</h3>
+            <div id="quiz-options-container"></div>
+            <button id="quiz-next-btn" class="btn btn-primary" style="margin-top:20px; display:none;">下一题</button>
+        </div>
+    </div>
+
+    <div id="scene-remedy" class="scene">
+        <div class="card" style="border-top: 5px solid var(--remedy);">
+            <div class="remedy-header">
+                <h3>⚠️ 逻辑断点诊断</h3>
+                <p>你在转换“函数/方程/不等式”时卡住了，让我们重新连接逻辑。</p>
+            </div>
+
+            <div style="margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px;">
+                <p><strong>❌ 原题回顾：</strong> <span id="remedy-original-question">...</span></p>
+                <div style="background:#fff3e0; padding:15px; border-radius:8px; color:#555;">
+                    <strong>📖 逻辑解析：</strong> <span id="remedy-explanation">...</span>
+                </div>
+            </div>
+
+            <h4 style="color:var(--remedy);">✍️ 变式挑战：</h4>
+            <p id="variant-question-text" style="font-weight:bold;">...</p>
+            <div id="variant-options-container"></div>
+            
+            <div id="deep-dive-box" class="deep-dive-box">
+                <h4 style="color:var(--deep); margin-top:0;">🚨 依然做错？启动【分步拆解】</h4>
+                <div id="deep-steps"></div>
+                <div style="margin-top:15px; text-align:right;">
+                    <button class="btn btn-primary" style="background:var(--deep); width:auto;" onclick="retryVariant()">🔄 重做此题</button>
+                </div>
+            </div>
+
+            <div id="variant-feedback" style="margin-top:15px; font-weight:bold; min-height:30px;"></div>
+            <button id="remedy-next-btn" class="btn btn-primary" style="margin-top:20px; display:none;" onclick="nextRemedyItem()">下一项诊断 ➡</button>
+        </div>
+    </div>
+
+    <div id="scene-result" class="scene">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 10px;">🔗</div>
+            <h2>B级 特训完成</h2>
+            <div id="result-details" style="text-align: left; margin: 20px 0; background: #f5f5f5; padding: 20px; border-radius: 8px;"></div>
+            <button class="btn btn-primary" onclick="location.reload()">再来一次</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // =========================================================
+    // B级核心题库：三个二次的关系
+    // =========================================================
+    const questionBank = [
+        // 【B-01】函数与方程：根与交点
+        {
+            id: "B-01", type: "main",
+            question: "已知方程 $x^2-3x-4=0$ 的两根为 $x_1=-1, x_2=4$。则抛物线 $y=x^2-3x-4$ 与 $x$ 轴的交点坐标是？",
+            options: ["$(-1,0)$ 和 $(4,0)$", "$(1,0)$ 和 $(-4,0)$", "$(0,-1)$ 和 $(0,4)$", "$(0,1)$ 和 $(0,-4)$"],
+            correct: 0, 
+            remediation: {
+                explanation: "<strong>逻辑桥梁：</strong>方程的根 $\\Leftrightarrow$ 函数图像与 x 轴交点的横坐标。<br>根是 $-1$ 和 $4$，对应的点就是 $(-1, 0)$ 和 $(4, 0)$。",
+                variant: {
+                    question: "若抛物线 $y=x^2-5x+6$ 与 $x$ 轴交于 $(2,0)$ 和 $(3,0)$，则方程 $x^2-5x+6=0$ 的解是？",
+                    options: ["$x=2, x=3$", "$x=-2, x=-3$", "$x=2, x=-3$", "$x=-2, x=3$"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：理解题意。题目给的是“图像交点”。",
+                    "第二步：逻辑转换。图像交点的横坐标 $x$，就是对应方程的根。",
+                    "第三步：交点横坐标是 2 和 3，所以方程的解就是 $x_1=2, x_2=3$。"
+                ]
+            }
+        },
+        // 【B-02】函数与不等式：看图解集 (上)
+        {
+            id: "B-02", type: "main",
+            question: " 如图，抛物线与x轴交于 $(-1,0)$ 和 $(3,0)$。当 $y < 0$ 时，x的取值范围是？",
+            options: ["$x < -1$ 或 $x > 3$", "$-1 < x < 3$", "$x > 3$", "$x < -1$"],
+            correct: 1, 
+            remediation: {
+                explanation: "1. $y < 0$ 意味着图像在 x 轴<strong>下方</strong>。<br>2. 观察图像，在 $-1$ 和 $3$ 之间的那段图像是“凹”下去在水面下的。<br>3. 所以范围是中间段：$-1 < x < 3$。",
+                variant: {
+                    question: "若抛物线开口向上，交点为 $-2$ 和 $4$。则 $y > 0$ (在上方) 的解集是？",
+                    options: ["$-2 < x < 4$", "$x < -2$ 或 $x > 4$", "$x > 4$", "$x < -2$"],
+                    correct: 1
+                },
+                stepByStep: [
+                    "第一步：画草图。开口向上，交点 -2, 4。",
+                    "第二步：找区域。$y>0$ 意味着要在 x 轴上方（两只耳朵）。",
+                    "第三步：看x轴。两边的部分在上方，所以是 $x < -2$ 或者 $x > 4$。"
+                ]
+            }
+        },
+        // 【B-03】直线与抛物线的交点
+        {
+            id: "B-03", type: "main",
+            question: "求直线 $y=2x$ 与抛物线 $y=x^2$ 的交点个数？",
+            options: ["0个", "1个", "2个", "3个"],
+            correct: 2, 
+            remediation: {
+                explanation: "<strong>联立方程：</strong>令 $x^2 = 2x$。<br>移项得 $x^2 - 2x = 0$。<br>解得 $x_1=0, x_2=2$。有两个不同的解，所以有 2 个交点。",
+                variant: {
+                    question: "直线 $y=x-2$ 与抛物线 $y=x^2$ 有几个交点？",
+                    options: ["0个", "1个", "2个", "无法确定"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：联立。令 $x^2 = x - 2$。",
+                    "第二步：整理成一般式。$x^2 - x + 2 = 0$。",
+                    "第三步：算判别式 $\\Delta$。$\\Delta = (-1)^2 - 4\\times1\\times2 = 1-8 = -7 < 0$。无解，所以0个交点。"
+                ]
+            }
+        },
+        // 【B-04】利用对称性求根
+        {
+            id: "B-04", type: "main",
+            question: "已知抛物线 $y=ax^2+bx+c$ 的对称轴是 $x=1$，其中一个与x轴交点是 $(3,0)$，另一个交点是？",
+            options: ["$(-1,0)$", "$(-2,0)$", "$(-3,0)$", "$(0,0)$"],
+            correct: 0, 
+            remediation: {
+                explanation: "<strong>对称性：</strong>两个交点关于对称轴对称。<br>点 $3$ 到对称轴 $1$ 的距离是 $2$。<br>所以另一个点在 $1$ 左边距离 $2$ 的地方：$1 - 2 = -1$。",
+                variant: {
+                    question: "方程 $ax^2+bx+c=0$ 的一根是 $-2$，对称轴是 $x=0$ (y轴)，另一根是？",
+                    options: ["2", "0", "-4", "4"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：画数轴。标出对称轴 0，标出根 -2。",
+                    "第二步：找距离。-2 到 0 的距离是 2。",
+                    "第三步：找对称点。0 右边距离 2 的地方，就是 2。"
+                ]
+            }
+        },
+        // 【B-05】韦达定理在函数中的应用
+        {
+            id: "B-05", type: "main",
+            question: "抛物线 $y=x^2+bx+3$ 与x轴的两个交点横坐标之积是？",
+            options: ["3", "-3", "b", "-b"],
+            correct: 0, 
+            remediation: {
+                explanation: "交点横坐标即方程的根。<br>根据韦达定理：$x_1 \cdot x_2 = \\frac{c}{a}$。<br>这里 $c=3, a=1$，所以积为 $3/1 = 3$。",
+                variant: {
+                    question: "抛物线 $y=x^2-4x+5$ 与x轴两交点记为 $A, B$，则 $A, B$ 的中点坐标的横坐标是？",
+                    options: ["4", "2", "-2", "-4"],
+                    correct: 1
+                },
+                stepByStep: [
+                    "第一步：两交点中点的横坐标，其实就是对称轴的位置。",
+                    "第二步：或者利用韦达定理 $(x_1+x_2)/2$。",
+                    "第三步：$x_1+x_2 = -b/a = 4$，除以2得 2。"
+                ]
+            }
+        },
+        // 【B-06】看图解不等式 (复杂版)
+        {
+            id: "B-06", type: "main",
+            question: "如图，直线 $y_1=x+1$ 与抛物线 $y_2=x^2$ 交于 $A(-0.6, 0.4)$ 和 $B(1.6, 2.6)$ (数据仅示意)。求 $x^2 > x+1$ 的解集？",
+            options: ["$x < -0.6$ 或 $x > 1.6$", "$-0.6 < x < 1.6$", "$x > 1.6$", "$x < -0.6$"],
+            correct: 0, 
+            remediation: {
+                explanation: "解 $x^2 > x+1$ 即 $y_2 > y_1$。<br>也就是找<strong>抛物线在直线上方</strong>的部分。<br>观察交点两侧，抛物线飞得比直线高，所以是两头：$x < x_A$ 或 $x > x_B$。",
+                variant: {
+                    question: "若要求 $x^2 < x+1$ (抛物线在直线下方) 的范围？",
+                    options: ["$-0.6 < x < 1.6$", "$x < -0.6$ 或 $x > 1.6$", "$x > 0$", "无解"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：翻译题目。$x^2 < x+1$ 意思是“抛物线压在直线底下”。",
+                    "第二步：看图。在两个交点之间，抛物线是凹下去的，被直线盖住了。",
+                    "第三步：所以范围是两个交点横坐标之间。"
+                ]
+            }
+        }
+    ];
+
+    // ================= 逻辑控制 (标准版) =================
+    let userAnswers = [];
+    let wrongIndices = [];
+    let currentQuizIndex = 0;
+    let currentRemedyIndex = 0;
+    let criticalFailures = 0;
+
+    function startQuiz() {
+        switchScene('scene-quiz');
+        loadQuizQuestion();
+    }
+
+    function loadQuizQuestion() {
+        const q = questionBank[currentQuizIndex];
+        document.getElementById('quiz-progress-text').innerText = `${currentQuizIndex + 1} / ${questionBank.length}`;
+        document.getElementById('quiz-progress-fill').style.width = `${((currentQuizIndex+1)/questionBank.length)*100}%`;
+        document.getElementById('quiz-question-text').innerHTML = q.question;
+        const container = document.getElementById('quiz-options-container');
+        container.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-opt';
+            btn.innerHTML = opt;
+            btn.onclick = () => selectQuizOption(idx, btn);
+            container.appendChild(btn);
+        });
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        renderMath();
+    }
+
+    function selectQuizOption(idx, btn) {
+        document.querySelectorAll('#quiz-options-container .btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        userAnswers[currentQuizIndex] = idx;
+        const nextBtn = document.getElementById('quiz-next-btn');
+        nextBtn.style.display = 'block';
+        if (currentQuizIndex === questionBank.length - 1) {
+            nextBtn.innerText = "提交试卷";
+            nextBtn.onclick = submitQuiz;
+        } else {
+            nextBtn.innerText = "下一题";
+            nextBtn.onclick = () => { currentQuizIndex++; loadQuizQuestion(); };
+        }
+    }
+
+    function submitQuiz() {
+        wrongIndices = [];
+        questionBank.forEach((q, idx) => {
+            if (userAnswers[idx] !== q.correct) wrongIndices.push(idx);
+        });
+        if (wrongIndices.length === 0) showResult(true);
+        else {
+            alert(`诊断出 ${wrongIndices.length} 个逻辑断点，进入智能修复。`);
+            startRemediation();
+        }
+    }
+
+    function startRemediation() {
+        currentRemedyIndex = 0;
+        criticalFailures = 0;
+        switchScene('scene-remedy');
+        loadRemedyItem();
+    }
+
+    function loadRemedyItem() {
+        const idx = wrongIndices[currentRemedyIndex];
+        const data = questionBank[idx];
+        document.getElementById('remedy-original-question').innerHTML = data.question;
+        document.getElementById('remedy-explanation').innerHTML = data.remediation.explanation;
+        document.getElementById('variant-question-text').innerHTML = data.remediation.variant.question;
+        document.getElementById('deep-dive-box').style.display = 'none';
+        document.getElementById('remedy-next-btn').style.display = 'none';
+        document.getElementById('variant-feedback').innerHTML = '';
+        renderVariantOptions(data, false);
+        renderMath();
+    }
+
+    function renderVariantOptions(data, isRetry) {
+        const container = document.getElementById('variant-options-container');
+        container.innerHTML = '';
+        data.remediation.variant.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-opt';
+            btn.innerHTML = opt;
+            btn.onclick = () => checkVariantAnswer(idx, btn, data, isRetry);
+            container.appendChild(btn);
+        });
+        renderMath();
+    }
+
+    function checkVariantAnswer(userIdx, btn, data, isRetry) {
+        const correctIdx = data.remediation.variant.correct;
+        const allBtns = document.querySelectorAll('#variant-options-container .btn');
+        allBtns.forEach(b => b.classList.add('disabled'));
+
+        if (userIdx === correctIdx) {
+            btn.style.backgroundColor = '#dcedc8'; btn.style.borderColor = '#00695c';
+            document.getElementById('variant-feedback').innerHTML = '<span style="color:green">✅ 逻辑已打通！</span>';
+            document.getElementById('remedy-next-btn').style.display = 'inline-block';
+        } else {
+            btn.style.backgroundColor = '#ffcdd2'; btn.style.borderColor = '#c62828';
+            if (!isRetry) {
+                document.getElementById('variant-feedback').innerHTML = '<span style="color:#c62828">❌ 还是混淆？请看下方的【分步拆解】。👇</span>';
+                showDeepDive(data);
+            } else {
+                criticalFailures++;
+                allBtns[correctIdx].style.backgroundColor = '#dcedc8';
+                document.getElementById('variant-feedback').innerHTML = '<span style="color:red">🆘 此知识点需要老师讲解（建议复习方程章节）。</span>';
+                document.getElementById('remedy-next-btn').style.display = 'inline-block';
+            }
+        }
+    }
+
+    function showDeepDive(data) {
+        const box = document.getElementById('deep-dive-box');
+        const stepsDiv = document.getElementById('deep-steps');
+        stepsDiv.innerHTML = '';
+        data.remediation.stepByStep.forEach(step => {
+            const div = document.createElement('div');
+            div.className = 'step-item';
+            div.innerHTML = step;
+            stepsDiv.appendChild(div);
+        });
+        box.style.display = 'block';
+        renderMath();
+        box.scrollIntoView({behavior: "smooth"});
+    }
+
+    function retryVariant() {
+        const idx = wrongIndices[currentRemedyIndex];
+        const data = questionBank[idx];
+        document.getElementById('deep-dive-box').style.display = 'none';
+        document.getElementById('variant-feedback').innerHTML = '';
+        renderVariantOptions(data, true);
+    }
+
+    function nextRemedyItem() {
+        currentRemedyIndex++;
+        if (currentRemedyIndex < wrongIndices.length) loadRemedyItem();
+        else showResult(false);
+    }
+
+    function showResult(isPerfect) {
+        switchScene('scene-result');
+        const div = document.getElementById('result-details');
+        if (isPerfect) {
+            div.innerHTML = "<h3 style='color:green'>B级融会贯通！🎉</h3><p>你已经成功打通了代数与几何的桥梁！</p>";
+        } else {
+            let html = `<p>初测得分：${questionBank.length - wrongIndices.length} / ${questionBank.length}</p>`;
+            html += `<p>重连了 ${wrongIndices.length} 个逻辑断点。</p>`;
+            if (criticalFailures > 0) {
+                html += `<div style="background:#ffebee; padding:10px; border-left:4px solid red; margin-top:10px;"><strong>🚨 注意：</strong> 有 ${criticalFailures} 个问题依然未解决。</div>`;
+            } else {
+                html += `<div style="background:#e8f5e9; padding:10px; border-left:4px solid green; margin-top:10px;">✅ 所有逻辑断点已修复。</div>`;
+            }
+            div.innerHTML = html;
+        }
+    }
+
+    function switchScene(id) {
+        document.querySelectorAll('.scene').forEach(e => e.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+    
+    function renderMath() {
+        if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) MathJax.typesetPromise();
+    }
+</script>
+
+</body>
+</html>

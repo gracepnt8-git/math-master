@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A级特训：二次函数图像与性质</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.bootcdn.net/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #512da8; /* A级使用深紫色，代表进阶 */
+            --quiz: #00796b;    /* 测试区青色 */
+            --remedy: #f57c00;  /* 补救橙 */
+            --deep: #c62828;    /* 深度红 */
+            --bg: #f3e5f5;      /* 浅紫背景 */
+            --card: #ffffff;
+        }
+
+        body { font-family: 'Segoe UI', 'PingFang SC', sans-serif; background: var(--bg); margin: 0; padding: 20px; line-height: 1.6; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        /* 场景切换 */
+        .scene { display: none; animation: fadeIn 0.5s; }
+        .scene.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 卡片样式 */
+        .card { background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        
+        h1, h2, h3 { margin-top: 0; color: #2c3e50; }
+        
+        /* 按钮 */
+        .btn {
+            display: inline-block; padding: 12px 24px; border-radius: 6px; cursor: pointer; border: none; font-size: 1rem; color: white; transition: 0.2s;
+            width: 100%; text-align: left; margin-bottom: 10px;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary { background: var(--primary); text-align: center; font-weight: bold; width: auto; }
+        
+        .btn-opt { background: white; color: #333; border: 2px solid #e0e0e0; }
+        .btn-opt:hover { background: #e1bee7; border-color: var(--primary); }
+        .btn-opt.selected { background: #e1bee7; border-color: var(--primary); color: var(--primary); font-weight: bold; }
+        .disabled { pointer-events: none; opacity: 0.6; }
+
+        /* Phase 1 教学区 */
+        .study-header { border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 20px; }
+        .knowledge-point { background: #f3e5f5; border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .key-tag { background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-right: 5px; }
+
+        /* SVG 图示框 */
+        .svg-demo { text-align: center; margin: 10px 0; background: white; border-radius: 8px; padding: 10px; border: 1px solid #ddd; }
+
+        /* Phase 3 补救区 */
+        .remedy-header { background: #fff3e0; color: #e65100; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffe0b2; }
+        .deep-dive-box {
+            display: none; background: #ffebee; border: 2px dashed var(--deep); padding: 15px; border-radius: 8px; margin-top: 15px; animation: slideDown 0.5s;
+        }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+        .step-item { margin-bottom: 8px; padding-left: 10px; border-left: 3px solid var(--deep); }
+
+        /* 进度条 */
+        .progress-bar { height: 8px; background: #e0e0e0; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--quiz); width: 0%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div id="scene-study" class="scene active">
+        <div class="card">
+            <div class="study-header">
+                <h1>A级：图像与性质 (数形结合)</h1>
+                <p>这一关的核心是“看图说话”。请务必掌握以下 3 大看图技巧。</p>
+            </div>
+            
+            <div class="knowledge-point">
+                <h3><span class="key-tag">技巧1</span>$a, b, c$ 的几何意义</h3>
+                <ul>
+                    <li><strong>$a$ (开口)：</strong> $a>0$ 笑脸(向上)，$a<0$ 哭脸(向下)。$|a|$ 越大口越小。</li>
+                    <li><strong>$b$ (对称轴)：</strong> 公式 $x = -\frac{b}{2a}$。<br><strong>口诀：左同右异。</strong><br>(对称轴在y轴左侧 $\rightarrow$ $a,b$同号；右侧 $\rightarrow$ $a,b$异号)。</li>
+                    <li><strong>$c$ (截距)：</strong> 抛物线与 $y$ 轴交点是 $(0, c)$。</li>
+                </ul>
+                <div class="svg-demo">
+                    <svg width="200" height="100" viewBox="-100 -50 200 100">
+                        <line x1="-90" y1="40" x2="90" y2="40" stroke="#888" stroke-width="1"/>
+                        <line x1="0" y1="-40" x2="0" y2="50" stroke="#888" stroke-width="1"/>
+                        <path d="M -50 -40 Q 20 100 70 -40" stroke="#512da8" stroke-width="2" fill="none"/>
+                        <text x="-90" y="-30" font-size="10" fill="#333">a>0, b<0 (右异), c<0</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="knowledge-point">
+                <h3><span class="key-tag">技巧2</span>平移口诀 (针对顶点)</h3>
+                <p><strong>左加右减 (括号内)，上加下减 (括号外)</strong></p>
+                <p>例：$y=ax^2$ $\xrightarrow{右平移h}$ $y=a(x-h)^2$ $\xrightarrow{上平移k}$ $y=a(x-h)^2+k$</p>
+            </div>
+
+            <div class="knowledge-point">
+                <h3><span class="key-tag">技巧3</span>交点与判别式 $\Delta$</h3>
+                <p>抛物线与 $x$ 轴的交点个数由 $\Delta = b^2-4ac$ 决定：</p>
+                <ul>
+                    <li>$\Delta > 0$ $\rightarrow$ 2个交点</li>
+                    <li>$\Delta = 0$ $\rightarrow$ 1个交点 (顶点在x轴)</li>
+                    <li>$\Delta < 0$ $\rightarrow$ 0个交点 (悬空)</li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="startQuiz()">我学会了，开始看图挑战 ➡</button>
+        </div>
+    </div>
+
+    <div id="scene-quiz" class="scene">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span style="font-weight:bold; color:var(--quiz);">A级 进阶测试</span>
+                <span id="quiz-progress-text">1 / 6</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="quiz-progress-fill"></div></div>
+
+            <h3 id="quiz-question-text">...</h3>
+            <div id="quiz-options-container"></div>
+            <button id="quiz-next-btn" class="btn btn-primary" style="margin-top:20px; display:none;">下一题</button>
+        </div>
+    </div>
+
+    <div id="scene-remedy" class="scene">
+        <div class="card" style="border-top: 5px solid var(--remedy);">
+            <div class="remedy-header">
+                <h3>⚠️ 图像诊断模式</h3>
+                <p>你的“数形结合”能力还有漏洞，请完成修复。</p>
+            </div>
+
+            <div style="margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px;">
+                <p><strong>❌ 原题回顾：</strong> <span id="remedy-original-question">...</span></p>
+                <div style="background:#fff3e0; padding:15px; border-radius:8px; color:#555;">
+                    <strong>📖 老师解析：</strong> <span id="remedy-explanation">...</span>
+                </div>
+            </div>
+
+            <h4 style="color:var(--remedy);">✍️ 变式挑战：</h4>
+            <p id="variant-question-text" style="font-weight:bold;">...</p>
+            <div id="variant-options-container"></div>
+            
+            <div id="deep-dive-box" class="deep-dive-box">
+                <h4 style="color:var(--deep); margin-top:0;">🚨 依然做错？启动【分步拆解】</h4>
+                <div id="deep-steps"></div>
+                <div style="margin-top:15px; text-align:right;">
+                    <button class="btn btn-primary" style="background:var(--deep); width:auto;" onclick="retryVariant()">🔄 重做此题</button>
+                </div>
+            </div>
+
+            <div id="variant-feedback" style="margin-top:15px; font-weight:bold; min-height:30px;"></div>
+            <button id="remedy-next-btn" class="btn btn-primary" style="margin-top:20px; display:none;" onclick="nextRemedyItem()">下一项诊断 ➡</button>
+        </div>
+    </div>
+
+    <div id="scene-result" class="scene">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 10px;">🎨</div>
+            <h2>A级特训结束</h2>
+            <div id="result-details" style="text-align: left; margin: 20px 0; background: #f5f5f5; padding: 20px; border-radius: 8px;"></div>
+            <button class="btn btn-primary" onclick="location.reload()">再来一次</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // =========================================================
+    // A级核心题库：图像与性质
+    // =========================================================
+    const questionBank = [
+        // 【A-01 开口与宽度】
+        {
+            id: "A-01", type: "main",
+            question: "关于抛物线 $ y = -3x^2 $，下列说法正确的是？",
+            options: ["开口向上，比 $y=-x^2$ 宽", "开口向下，比 $y=-x^2$ 宽", "开口向上，比 $y=-x^2$ 窄", "开口向下，比 $y=-x^2$ 窄"],
+            correct: 3, 
+            remediation: {
+                explanation: "1. 系数 $-3 < 0$，所以开口<strong>向下</strong>。<br>2. 绝对值 $|-3| = 3$，而 $|-1|=1$。<br>3. <strong>绝对值越大，开口越小（越窄）</strong>。所以比 $y=-x^2$ 窄。",
+                variant: {
+                    question: "比较 $ y=\\frac{1}{2}x^2 $ 和 $ y=2x^2 $ 的图像，正确的是？",
+                    options: ["前者开口大（宽）", "后者开口大（宽）", "一样宽", "无法比较"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：看系数绝对值。$|1/2| = 0.5$， $|2| = 2$。",
+                    "第二步：记忆口诀——系数越小，开口越阔（宽）；系数越大，开口越陡（窄）。",
+                    "第三步：$0.5 < 2$，所以 $y=\\frac{1}{2}x^2$ 的开口更宽。"
+                ]
+            }
+        },
+        // 【A-02 对称轴与b的符号】
+        {
+            id: "A-02", type: "main",
+            question: "抛物线 $ y = -(x+2)^2 + 3 $ 的对称轴是？",
+            options: ["直线 $x=2$", "直线 $x=-2$", "直线 $x=3$", "直线 $x=-3$"],
+            correct: 1, 
+            remediation: {
+                explanation: "顶点式 $y=a(x-h)^2+k$ 的对称轴是直线 $x=h$。<br>这里括号内是 $x+2$，即 $x-(-2)$，所以 $h=-2$。对称轴是 $x=-2$。",
+                variant: {
+                    question: "已知 $y=ax^2+bx+c$ 的对称轴是直线 $x=1$，且 $a>0$，则 $b$ 的符号是？",
+                    options: ["$b>0$", "$b<0$", "$b=0$", "无法确定"],
+                    correct: 1
+                },
+                stepByStep: [
+                    "第一步：对称轴公式 $x = -\\frac{b}{2a} = 1$。",
+                    "第二步：因为对称轴在y轴右侧(正)，根据“左同右异”，$a,b$ 必须异号。",
+                    "第三步：已知 $a>0$ (正)，所以 $b$ 必须是负的。"
+                ]
+            }
+        },
+        // 【A-03 图像平移】
+        {
+            id: "A-03", type: "main",
+            question: "将抛物线 $ y=2x^2 $ 向左平移 1 个单位，再向下平移 3 个单位，解析式为？",
+            options: ["$ y=2(x-1)^2-3 $", "$ y=2(x+1)^2-3 $", "$ y=2(x-1)^2+3 $", "$ y=2(x+1)^2+3 $"],
+            correct: 1, 
+            remediation: {
+                explanation: "<strong>平移口诀：</strong>左加右减（括号内），上加下减（括号外）。<br>左移1 $\\rightarrow$ $x$ 变 $(x+1)$；下移3 $\\rightarrow$ 尾巴减3。",
+                variant: {
+                    question: "抛物线 $ y=(x-2)^2+1 $ 是由 $y=x^2$ 怎样平移得到的？",
+                    options: ["右移2，上移1", "左移2，上移1", "右移2，下移1", "左移2，下移1"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：看括号内 $(x-2)$，这是减号，对应“右减”，所以是向右平移2。",
+                    "第二步：看括号外 $+1$，这是加号，对应“上加”，所以是向上平移1。",
+                    "第三步：综合得“右移2，上移1”。"
+                ]
+            }
+        },
+        // 【A-04 交点与判别式】
+        {
+            id: "A-04", type: "main",
+            question: "抛物线 $ y=x^2-2x+3 $ 与 $x$ 轴的交点个数是？",
+            options: ["0个", "1个", "2个", "3个"],
+            correct: 0, 
+            remediation: {
+                explanation: "交点个数看 $\\Delta = b^2-4ac$。<br>这里 $a=1, b=-2, c=3$。<br>$\\Delta = (-2)^2 - 4\\times1\\times3 = 4 - 12 = -8$。<br>$\\Delta < 0$，所以无交点。",
+                variant: {
+                    question: "若抛物线 $ y=x^2+4x+k $ 与 $x$ 轴只有一个交点，则 $k=$？",
+                    options: ["4", "-4", "2", "0"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：只有一个交点意味着 $\\Delta = 0$。",
+                    "第二步：列式 $\\Delta = 4^2 - 4\\times1\\times k = 0$。",
+                    "第三步：$16 - 4k = 0 \\Rightarrow 4k = 16 \\Rightarrow k=4$。"
+                ]
+            }
+        },
+        // 【A-05 识图综合题 (经典中考题)】
+        {
+            id: "A-05", type: "main",
+            question: "如图，抛物线开口向下，顶点在第一象限，与y轴交于正半轴。则 $a,b,c$ 符号为？",
+            options: ["$a<0, b>0, c>0$", "$a<0, b<0, c>0$", "$a<0, b>0, c<0$", "$a>0, b>0, c>0$"],
+            correct: 0, 
+            remediation: {
+                explanation: "1. 开口向下 $\\rightarrow a<0$；<br>2. 顶点在第一象限(右侧) $\\rightarrow$ 对称轴 $>0$ $\\rightarrow$ 左同右异 $\\rightarrow b$与$a$异号 $\\rightarrow b>0$；<br>3. 交y轴正半轴 $\\rightarrow c>0$。",
+                variant: {
+                    question: "若 $y=ax^2+bx+c$ 的图像如图所示：$a<0$，$b<0$，则对称轴在？",
+                    options: ["y轴左侧", "y轴右侧", "y轴上", "无法确定"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：口诀“左同右异”。",
+                    "第二步：现在 $a$ 是负，$b$ 是负，它们符号“相同”。",
+                    "第三步：同号在左，所以对称轴在y轴左侧。"
+                ]
+            }
+        },
+        // 【A-06 增减性】
+        {
+            id: "A-06", type: "main",
+            question: "抛物线 $ y=(x-1)^2+2 $，当 $x>1$ 时，y随x的增大而？",
+            options: ["增大", "减小", "先增后减", "先减后增"],
+            correct: 0, 
+            remediation: {
+                explanation: "1. 找对称轴：$x=1$。<br>2. 看开口：$a=1>0$，开口向上。<br>3. 画草图：对称轴右侧($x>1$) 图像是上升的。<br>所以y随x增大而增大。",
+                variant: {
+                    question: "抛物线 $ y=-x^2 $，当 $x<0$ 时，y随x的增大而？",
+                    options: ["增大", "减小", "不变", "无法确定"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：对称轴是 $x=0$ (y轴)，开口向下 ($a=-1$)。",
+                    "第二步：想象一个哭脸。在y轴左侧 ($x<0$)，图像是爬坡还是下坡？",
+                    "第三步：从左往右看，图像是上升的（爬坡），所以是“增大”。"
+                ]
+            }
+        }
+    ];
+
+    // ================= 逻辑控制 (与S级完全一致) =================
+    let userAnswers = [];
+    let wrongIndices = [];
+    let currentQuizIndex = 0;
+    let currentRemedyIndex = 0;
+    let criticalFailures = 0;
+
+    function startQuiz() {
+        switchScene('scene-quiz');
+        loadQuizQuestion();
+    }
+
+    function loadQuizQuestion() {
+        const q = questionBank[currentQuizIndex];
+        document.getElementById('quiz-progress-text').innerText = `${currentQuizIndex + 1} / ${questionBank.length}`;
+        document.getElementById('quiz-progress-fill').style.width = `${((currentQuizIndex+1)/questionBank.length)*100}%`;
+        document.getElementById('quiz-question-text').innerHTML = q.question;
+        const container = document.getElementById('quiz-options-container');
+        container.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-opt';
+            btn.innerHTML = opt;
+            btn.onclick = () => selectQuizOption(idx, btn);
+            container.appendChild(btn);
+        });
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        renderMath();
+    }
+
+    function selectQuizOption(idx, btn) {
+        document.querySelectorAll('#quiz-options-container .btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        userAnswers[currentQuizIndex] = idx;
+        const nextBtn = document.getElementById('quiz-next-btn');
+        nextBtn.style.display = 'block';
+        if (currentQuizIndex === questionBank.length - 1) {
+            nextBtn.innerText = "提交试卷";
+            nextBtn.onclick = submitQuiz;
+        } else {
+            nextBtn.innerText = "下一题";
+            nextBtn.onclick = () => { currentQuizIndex++; loadQuizQuestion(); };
+        }
+    }
+
+    function submitQuiz() {
+        wrongIndices = [];
+        questionBank.forEach((q, idx) => {
+            if (userAnswers[idx] !== q.correct) wrongIndices.push(idx);
+        });
+        if (wrongIndices.length === 0) showResult(true);
+        else {
+            alert(`诊断出 ${wrongIndices.length} 个图像理解误区，进入智能修复。`);
+            startRemediation();
+        }
+    }
+
+    function startRemediation() {
+        currentRemedyIndex = 0;
+        criticalFailures = 0;
+        switchScene('scene-remedy');
+        loadRemedyItem();
+    }
+
+    function loadRemedyItem() {
+        const idx = wrongIndices[currentRemedyIndex];
+        const data = questionBank[idx];
+        document.getElementById('remedy-original-question').innerHTML = data.question;
+        document.getElementById('remedy-explanation').innerHTML = data.remediation.explanation;
+        document.getElementById('variant-question-text').innerHTML = data.remediation.variant.question;
+        document.getElementById('deep-dive-box').style.display = 'none';
+        document.getElementById('remedy-next-btn').style.display = 'none';
+        document.getElementById('variant-feedback').innerHTML = '';
+        renderVariantOptions(data, false);
+        renderMath();
+    }
+
+    function renderVariantOptions(data, isRetry) {
+        const container = document.getElementById('variant-options-container');
+        container.innerHTML = '';
+        data.remediation.variant.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-opt';
+            btn.innerHTML = opt;
+            btn.onclick = () => checkVariantAnswer(idx, btn, data, isRetry);
+            container.appendChild(btn);
+        });
+        renderMath();
+    }
+
+    function checkVariantAnswer(userIdx, btn, data, isRetry) {
+        const correctIdx = data.remediation.variant.correct;
+        const allBtns = document.querySelectorAll('#variant-options-container .btn');
+        allBtns.forEach(b => b.classList.add('disabled'));
+
+        if (userIdx === correctIdx) {
+            btn.style.backgroundColor = '#dcedc8'; btn.style.borderColor = '#00796b';
+            document.getElementById('variant-feedback').innerHTML = '<span style="color:green">✅ 图像思维已修复！</span>';
+            document.getElementById('remedy-next-btn').style.display = 'inline-block';
+        } else {
+            btn.style.backgroundColor = '#ffcdd2'; btn.style.borderColor = '#c62828';
+            if (!isRetry) {
+                document.getElementById('variant-feedback').innerHTML = '<span style="color:#c62828">❌ 还是没看懂图？请看下方的【分步拆解】。👇</span>';
+                showDeepDive(data);
+            } else {
+                criticalFailures++;
+                allBtns[correctIdx].style.backgroundColor = '#dcedc8';
+                document.getElementById('variant-feedback').innerHTML = '<span style="color:red">🆘 此知识点需要老师当面画图讲解。</span>';
+                document.getElementById('remedy-next-btn').style.display = 'inline-block';
+            }
+        }
+    }
+
+    function showDeepDive(data) {
+        const box = document.getElementById('deep-dive-box');
+        const stepsDiv = document.getElementById('deep-steps');
+        stepsDiv.innerHTML = '';
+        data.remediation.stepByStep.forEach(step => {
+            const div = document.createElement('div');
+            div.className = 'step-item';
+            div.innerHTML = step;
+            stepsDiv.appendChild(div);
+        });
+        box.style.display = 'block';
+        renderMath();
+        box.scrollIntoView({behavior: "smooth"});
+    }
+
+    function retryVariant() {
+        const idx = wrongIndices[currentRemedyIndex];
+        const data = questionBank[idx];
+        document.getElementById('deep-dive-box').style.display = 'none';
+        document.getElementById('variant-feedback').innerHTML = '';
+        renderVariantOptions(data, true);
+    }
+
+    function nextRemedyItem() {
+        currentRemedyIndex++;
+        if (currentRemedyIndex < wrongIndices.length) loadRemedyItem();
+        else showResult(false);
+    }
+
+    function showResult(isPerfect) {
+        switchScene('scene-result');
+        const div = document.getElementById('result-details');
+        if (isPerfect) {
+            div.innerHTML = "<h3 style='color:green'>A级挑战成功！🎉</h3><p>你的“数形结合”能力非常出色！</p>";
+        } else {
+            let html = `<p>初测得分：${questionBank.length - wrongIndices.length} / ${questionBank.length}</p>`;
+            html += `<p>修复了 ${wrongIndices.length} 个认知漏洞。</p>`;
+            if (criticalFailures > 0) {
+                html += `<div style="background:#ffebee; padding:10px; border-left:4px solid red; margin-top:10px;"><strong>🚨 注意：</strong> 有 ${criticalFailures} 个问题依然未解决，建议重画草图复习。</div>`;
+            } else {
+                html += `<div style="background:#e8f5e9; padding:10px; border-left:4px solid green; margin-top:10px;">✅ 所有漏洞已修复。</div>`;
+            }
+            div.innerHTML = html;
+        }
+    }
+
+    function switchScene(id) {
+        document.querySelectorAll('.scene').forEach(e => e.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+    
+    function renderMath() {
+        if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) MathJax.typesetPromise();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S级特训：全闭环智能教学系统</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.bootcdn.net/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #1565c0; /* 教学蓝 */
+            --quiz: #2e7d32;    /* 测试绿 */
+            --remedy: #f57c00;  /* 补救橙 */
+            --deep: #c62828;    /* 深度红 */
+            --bg: #f4f6f8;
+            --card: #ffffff;
+        }
+
+        body { font-family: 'Segoe UI', 'PingFang SC', sans-serif; background: var(--bg); margin: 0; padding: 20px; line-height: 1.6; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        /* 场景切换动画 */
+        .scene { display: none; animation: fadeIn 0.5s; }
+        .scene.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 卡片通用样式 */
+        .card { background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; position: relative; }
+        
+        h1, h2, h3 { margin-top: 0; color: #2c3e50; }
+        
+        /* 按钮样式 */
+        .btn {
+            display: inline-block; padding: 12px 24px; border-radius: 6px; cursor: pointer; border: none; font-size: 1rem; color: white; transition: 0.2s;
+            width: 100%; text-align: left; margin-bottom: 10px;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary { background: var(--primary); text-align: center; font-weight: bold; width: auto; }
+        
+        /* 选项按钮 */
+        .btn-opt { background: white; color: #333; border: 2px solid #e0e0e0; }
+        .btn-opt:hover { background: #e3f2fd; border-color: var(--primary); }
+        .btn-opt.selected { background: #e3f2fd; border-color: var(--primary); color: var(--primary); font-weight: bold; }
+        .disabled { pointer-events: none; opacity: 0.6; }
+
+        /* --- Phase 1 教学区样式 --- */
+        .study-header { border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 20px; }
+        .knowledge-point {
+            background: #e1f5fe; border: 1px dashed var(--primary); padding: 15px; border-radius: 8px; margin-bottom: 15px;
+        }
+        .key-tag { background: var(--primary); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-right: 5px; }
+
+        /* --- Phase 3 补救区样式 --- */
+        .remedy-header { background: #fff3e0; color: #e65100; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffe0b2; }
+        
+        /* 深度干预盒子 */
+        .deep-dive-box {
+            display: none; /* 默认隐藏 */
+            background: #ffebee; border: 2px dashed var(--deep); padding: 15px; border-radius: 8px; margin-top: 15px;
+            animation: slideDown 0.5s;
+        }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+
+        .step-item { margin-bottom: 8px; padding-left: 10px; border-left: 3px solid var(--deep); }
+
+        /* 进度条 */
+        .progress-bar { height: 8px; background: #e0e0e0; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--quiz); width: 0%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div id="scene-study" class="scene active">
+        <div class="card">
+            <div class="study-header">
+                <h1>第一步：S级考点复习</h1>
+                <p>在开始测试前，请确保你已经死记硬背了以下 4 个核心铁律。</p>
+            </div>
+            
+            <div class="knowledge-point">
+                <h3><span class="key-tag">S-01</span>定义铁律</h3>
+                <p>二次函数 $y=ax^2+bx+c$ 必须满足：</p>
+                <ul>
+                    <li><strong>$a \neq 0$</strong> (二次项系数不能为0)</li>
+                    <li>$x$ 的最高次数必须是 <strong>2</strong></li>
+                    <li>必须是整式 (分母中不能有未知数)</li>
+                </ul>
+            </div>
+
+            <div class="knowledge-point">
+                <h3><span class="key-tag">S-02</span>顶点式口诀</h3>
+                <p>对于 $y=a(x-h)^2+k$：</p>
+                <ul>
+                    <li>顶点坐标是 <strong>$(h, k)$</strong></li>
+                    <li><strong>记忆口诀：</strong>括号里面“左加右减”（符号要变），括号外面符号不变。</li>
+                    <li>例：$y=2(x+3)^2-5$ 的顶点是 $(-3, -5)$。</li>
+                </ul>
+            </div>
+
+            <div class="knowledge-point">
+                <h3><span class="key-tag">S-03</span>待定系数法策略</h3>
+                <ul>
+                    <li>已知 <strong>顶点</strong> $(h,k)$ $\rightarrow$ 设 <strong>顶点式</strong> (最快)</li>
+                    <li>已知 <strong>三点</strong> $\rightarrow$ 设 <strong>一般式</strong> (最慢)</li>
+                    <li>已知 <strong>与x轴交点</strong> $\rightarrow$ 设 <strong>交点式</strong></li>
+                </ul>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="startQuiz()">我已掌握，开始测试 ➡</button>
+        </div>
+    </div>
+
+    <div id="scene-quiz" class="scene">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span style="font-weight:bold; color:var(--quiz);">S级 达标测试</span>
+                <span id="quiz-progress-text">1 / 6</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="quiz-progress-fill"></div></div>
+
+            <h3 id="quiz-question-text">...</h3>
+            <div id="quiz-options-container"></div>
+            
+            <button id="quiz-next-btn" class="btn btn-primary" style="margin-top:20px; display:none;">下一题</button>
+        </div>
+    </div>
+
+    <div id="scene-remedy" class="scene">
+        <div class="card" style="border-top: 5px solid var(--remedy);">
+            <div class="remedy-header">
+                <h3>⚠️ 智能错题诊疗</h3>
+                <p>系统检测到知识盲区。请完成以下三步修复流程。</p>
+            </div>
+
+            <div style="margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px;">
+                <p><strong>❌ 原题回顾：</strong> <span id="remedy-original-question">...</span></p>
+                <div style="background:#fff8e1; padding:15px; border-radius:8px; color:#555;">
+                    <strong>📖 老师解析：</strong> <span id="remedy-explanation">...</span>
+                </div>
+            </div>
+
+            <h4 style="color:var(--remedy);">✍️ 变式题挑战 (证明你懂了)：</h4>
+            <p id="variant-question-text" style="font-weight:bold;">...</p>
+            <div id="variant-options-container"></div>
+            
+            <div id="deep-dive-box" class="deep-dive-box">
+                <h4 style="color:var(--deep); margin-top:0;">🚨 依然做错？启动【分步拆解】模式</h4>
+                <div id="deep-steps"></div>
+                <div style="margin-top:15px; text-align:right;">
+                    <button class="btn btn-primary" style="background:var(--deep); width:auto;" onclick="retryVariant()">🔄 我看懂了，重做此题</button>
+                </div>
+            </div>
+
+            <div id="variant-feedback" style="margin-top:15px; font-weight:bold; min-height:30px;"></div>
+            
+            <button id="remedy-next-btn" class="btn btn-primary" style="margin-top:20px; display:none;" onclick="nextRemedyItem()">下一项诊断 ➡</button>
+        </div>
+    </div>
+
+    <div id="scene-result" class="scene">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 10px;">🎉</div>
+            <h2>特训结束</h2>
+            <div id="result-details" style="text-align: left; margin: 20px 0; background: #f5f5f5; padding: 20px; border-radius: 8px;"></div>
+            <button class="btn btn-primary" onclick="location.reload()">重新开始学习</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // =========================================================
+    // 数据中心：包含题目、解析、变式题、分步拆解
+    // =========================================================
+    const questionBank = [
+        {
+            id: "S-01", type: "main",
+            question: "下列函数中，属于<strong>二次函数</strong>的是？",
+            options: ["$ y = 2x - 1 $", "$ y = (x-1)^2 - x^2 $", "$ y = \\frac{1}{x^2} + 2 $", "$ y = 1 - 3x^2 $"],
+            correct: 3, 
+            remediation: {
+                explanation: "<strong>判据：</strong>1.整式；2.最高次数为2；3.二次项系数 $a\\neq0$。<br>B选项化简后是 $-2x+1$ (一次)；C选项是分式；只有D符合。",
+                variant: {
+                    question: "若 $ y = (m-2)x^2 + 3x $ 是二次函数，则 $ m $ 的范围？",
+                    options: ["$ m = 2 $", "$ m \\neq 2 $", "$ m > 2 $", "任意实数"],
+                    correct: 1
+                },
+                stepByStep: [
+                    "第一步：找到 $x^2$ 的系数，这里是 $m-2$。",
+                    "第二步：根据定义 $a \\neq 0$，列出不等式 $m-2 \\neq 0$。",
+                    "第三步：解不等式，得 $m \\neq 2$。"
+                ]
+            }
+        },
+        {
+            id: "S-02", type: "main",
+            question: "抛物线 $ y = -2(x+3)^2 - 5 $ 的<strong>顶点坐标</strong>是？",
+            options: ["$ (3, 5) $", "$ (-3, 5) $", "$ (-3, -5) $", "$ (3, -5) $"],
+            correct: 2, 
+            remediation: {
+                explanation: "<strong>口诀：</strong>括号里面变号，括号外面不变。<br>$(x+3)$ 变号得 $-3$，尾巴 $-5$ 照抄。",
+                variant: {
+                    question: "已知抛物线顶点是 $(2, -4)$，解析式可能是？",
+                    options: ["$ y=2(x+2)^2-4 $", "$ y=2(x-2)^2-4 $", "$ y=2(x-2)^2+4 $", "$ y=2(x+2)^2+4 $"],
+                    correct: 1
+                },
+                stepByStep: [
+                    "第一步：横坐标是 $2$，放入括号要变号，变成 $(x-2)^2$。",
+                    "第二步：纵坐标是 $-4$，放在尾巴不变号，就是 $-4$。",
+                    "第三步：组合起来，找含有 $(x-2)^2-4$ 的选项。"
+                ]
+            }
+        },
+        {
+            id: "S-03", type: "main",
+            question: "将一般式 $ y = x^2 - 4x + 3 $ 化为顶点式？",
+            options: ["$ y = (x-2)^2 - 1 $", "$ y = (x-2)^2 + 3 $", "$ y = (x+2)^2 - 1 $", "$ y = (x-2)^2 + 7 $"],
+            correct: 0, 
+            remediation: {
+                explanation: "配方核心：加上一次项系数一半的平方。<br>$-4$ 的一半是 $-2$，平方是 $4$。<br>$y=(x^2-4x+4)-4+3 = (x-2)^2-1$。",
+                variant: {
+                    question: "抛物线 $ y = x^2 + 6x + 5 $ 的对称轴是？",
+                    options: ["$ x = 3 $", "$ x = -3 $", "$ x = 6 $", "$ x = -6 $"],
+                    correct: 1
+                },
+                stepByStep: [
+                    "第一步：识别系数 $a=1, b=6$。",
+                    "第二步：使用对称轴公式 $x = -\\frac{b}{2a}$。",
+                    "第三步：代入计算 $x = -\\frac{6}{2} = -3$。"
+                ]
+            }
+        },
+        {
+            id: "S-04", type: "main",
+            question: "已知抛物线<strong>顶点</strong>为 $(1, 4)$，且过点 $(0, 3)$，设解析式首选？",
+            options: ["$ y = ax^2+bx+c $", "$ y = a(x-1)^2+4 $", "$ y = a(x+1)^2+4 $", "$ y = a(x-1)(x-2) $"],
+            correct: 1, 
+            remediation: {
+                explanation: "有顶点，必设顶点式 $y=a(x-h)^2+k$。这里 $h=1, k=4$。",
+                variant: {
+                    question: "若抛物线顶点是原点 $(0,0)$，解析式设为？",
+                    options: ["$ y=ax^2+bx $", "$ y=ax^2+c $", "$ y=ax^2 $", "$ y=a(x-1)^2 $"],
+                    correct: 2
+                },
+                stepByStep: [
+                    "第一步：顶点 $(0,0)$ 代入顶点式 $y=a(x-0)^2+0$。",
+                    "第二步：化简 $(x-0)$ 就是 $x$。",
+                    "第三步：得到 $y=ax^2$。"
+                ]
+            }
+        },
+        {
+            id: "S-Mix-01", type: "main",
+            question: "若 $ y = (m-2)x^{m^2-2} $ 是二次函数，则 $m$？",
+            options: ["$ 2 $", "$ -2 $", "$ \\pm 2 $", "$ 0 $"],
+            correct: 1, 
+            remediation: {
+                explanation: "双重限制：1.次数 $m^2-2=2 \\Rightarrow m=\\pm 2$；<br>2.系数 $m-2 \\neq 0 \\Rightarrow m \\neq 2$。综合得 $m=-2$。",
+                variant: {
+                    question: "若 $ y=(k+1)x^2 $ 开口向下，则 $k$？",
+                    options: ["$ k>-1 $", "$ k<-1 $", "$ k=-1 $", "$ k\\neq-1 $"],
+                    correct: 1
+                },
+                stepByStep: [
+                    "第一步：开口向下 $\\rightarrow$ 系数 $a < 0$。",
+                    "第二步：这里 $a = k+1$。",
+                    "第三步：解不等式 $k+1 < 0$，得 $k < -1$。"
+                ]
+            }
+        },
+        {
+            id: "S-Mix-02", type: "main",
+            question: "$ y=-x^2 $ 右移1，上移2，得到？",
+            options: ["$ y=-(x+1)^2+2 $", "$ y=-(x-1)^2+2 $", "$ y=-(x-1)^2-2 $", "$ y=-(x+1)^2-2 $"],
+            correct: 1, 
+            remediation: {
+                explanation: "左加右减，上加下减。<br>右移1 $\\rightarrow (x-1)$；上移2 $\\rightarrow$ 尾巴$+2$。",
+                variant: {
+                    question: "$ y=-(x-1)^2+3 $ 左移1个单位后是？",
+                    options: ["$ y=-x^2+3 $", "$ y=-(x-2)^2+3 $", "$ y=-(x-1)^2+2 $", "$ y=-(x-1)^2+4 $"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：向左移1，根据“左加”，x变成 $(x+1)$。",
+                    "第二步：原式里是 $(x-1)$，现在变成 $(x-1+1)$，也就是 $x$。",
+                    "第三步：尾巴不动，还是 $+3$。结果 $y=-x^2+3$。"
+                ]
+            }
+        }
+    ];
+
+    // =========================================================
+    // 核心逻辑控制
+    // =========================================================
+    let userAnswers = [];
+    let wrongIndices = [];
+    let currentQuizIndex = 0;
+    let currentRemedyIndex = 0;
+    let criticalFailures = 0; // 记录最终还没学会的题数
+
+    // --- 1. 教学 -> 测试 ---
+    function startQuiz() {
+        switchScene('scene-quiz');
+        loadQuizQuestion();
+    }
+
+    // --- 2. 测试逻辑 ---
+    function loadQuizQuestion() {
+        const q = questionBank[currentQuizIndex];
+        document.getElementById('quiz-progress-text').innerText = `${currentQuizIndex + 1} / ${questionBank.length}`;
+        document.getElementById('quiz-progress-fill').style.width = `${((currentQuizIndex+1)/questionBank.length)*100}%`;
+        document.getElementById('quiz-question-text').innerHTML = q.question;
+        
+        const container = document.getElementById('quiz-options-container');
+        container.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-opt';
+            btn.innerHTML = opt;
+            btn.onclick = () => selectQuizOption(idx, btn);
+            container.appendChild(btn);
+        });
+
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        renderMath();
+    }
+
+    function selectQuizOption(idx, btn) {
+        document.querySelectorAll('#quiz-options-container .btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        userAnswers[currentQuizIndex] = idx;
+        
+        const nextBtn = document.getElementById('quiz-next-btn');
+        nextBtn.style.display = 'block';
+        if (currentQuizIndex === questionBank.length - 1) {
+            nextBtn.innerText = "提交试卷";
+            nextBtn.onclick = submitQuiz;
+        } else {
+            nextBtn.innerText = "下一题";
+            nextBtn.onclick = () => { currentQuizIndex++; loadQuizQuestion(); };
+        }
+    }
+
+    // --- 3. 提交与判分 ---
+    function submitQuiz() {
+        wrongIndices = [];
+        questionBank.forEach((q, idx) => {
+            if (userAnswers[idx] !== q.correct) wrongIndices.push(idx);
+        });
+
+        if (wrongIndices.length === 0) {
+            showResult(true);
+        } else {
+            alert(`你做对了 ${questionBank.length - wrongIndices.length} 道题。有 ${wrongIndices.length} 道题需要进入【深度诊疗】环节。`);
+            startRemediation();
+        }
+    }
+
+    // --- 4. 补救逻辑 (含二级干预) ---
+    function startRemediation() {
+        currentRemedyIndex = 0;
+        criticalFailures = 0;
+        switchScene('scene-remedy');
+        loadRemedyItem();
+    }
+
+    function loadRemedyItem() {
+        const idx = wrongIndices[currentRemedyIndex];
+        const data = questionBank[idx];
+        
+        // 填充内容
+        document.getElementById('remedy-original-question').innerHTML = data.question;
+        document.getElementById('remedy-explanation').innerHTML = data.remediation.explanation;
+        document.getElementById('variant-question-text').innerHTML = data.remediation.variant.question;
+        
+        // 重置状态
+        document.getElementById('deep-dive-box').style.display = 'none';
+        document.getElementById('remedy-next-btn').style.display = 'none';
+        document.getElementById('variant-feedback').innerHTML = '';
+        
+        renderVariantOptions(data, false);
+        renderMath();
+    }
+
+    function renderVariantOptions(data, isRetry) {
+        const container = document.getElementById('variant-options-container');
+        container.innerHTML = '';
+        data.remediation.variant.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-opt';
+            btn.innerHTML = opt;
+            btn.onclick = () => checkVariantAnswer(idx, btn, data, isRetry);
+            container.appendChild(btn);
+        });
+        renderMath();
+    }
+
+    function checkVariantAnswer(userIdx, btn, data, isRetry) {
+        const correctIdx = data.remediation.variant.correct;
+        const allBtns = document.querySelectorAll('#variant-options-container .btn');
+        allBtns.forEach(b => b.classList.add('disabled')); // 锁死
+
+        if (userIdx === correctIdx) {
+            // 答对
+            btn.style.backgroundColor = '#dcedc8'; btn.style.borderColor = '#2e7d32';
+            document.getElementById('variant-feedback').innerHTML = '<span style="color:green">✅ 挑战成功！知识点已修复。</span>';
+            document.getElementById('remedy-next-btn').style.display = 'inline-block';
+        } else {
+            // 答错
+            btn.style.backgroundColor = '#ffcdd2'; btn.style.borderColor = '#c62828';
+            
+            if (!isRetry) {
+                // 第一次错 -> 触发深度干预
+                document.getElementById('variant-feedback').innerHTML = '<span style="color:#c62828">❌ 依然错误。请阅读下方的【分步拆解】，然后重试。</span>';
+                showDeepDive(data);
+            } else {
+                // 重试还错 -> 彻底失败
+                criticalFailures++;
+                allBtns[correctIdx].style.backgroundColor = '#dcedc8'; // 显示正解
+                document.getElementById('variant-feedback').innerHTML = '<span style="color:red">🆘 此题重试依然错误。请务必截图问老师！</span>';
+                document.getElementById('remedy-next-btn').style.display = 'inline-block';
+            }
+        }
+    }
+
+    function showDeepDive(data) {
+        const box = document.getElementById('deep-dive-box');
+        const stepsDiv = document.getElementById('deep-steps');
+        stepsDiv.innerHTML = '';
+        
+        data.remediation.stepByStep.forEach(step => {
+            const div = document.createElement('div');
+            div.className = 'step-item';
+            div.innerHTML = step;
+            stepsDiv.appendChild(div);
+        });
+        
+        box.style.display = 'block';
+        renderMath();
+        // 滚动到底部
+        box.scrollIntoView({behavior: "smooth"});
+    }
+
+    function retryVariant() {
+        const idx = wrongIndices[currentRemedyIndex];
+        const data = questionBank[idx];
+        
+        // 隐藏深度框，重置反馈
+        document.getElementById('deep-dive-box').style.display = 'none';
+        document.getElementById('variant-feedback').innerHTML = '';
+        
+        // 重新渲染选项 (isRetry = true)
+        renderVariantOptions(data, true);
+    }
+
+    function nextRemedyItem() {
+        currentRemedyIndex++;
+        if (currentRemedyIndex < wrongIndices.length) {
+            loadRemedyItem();
+        } else {
+            showResult(false);
+        }
+    }
+
+    // --- 5. 结果页 ---
+    function showResult(isPerfect) {
+        switchScene('scene-result');
+        const div = document.getElementById('result-details');
+        if (isPerfect) {
+            div.innerHTML = "<h3 style='color:green'>完美通关！🎉</h3><p>你的基础非常扎实，无需任何补救。</p>";
+        } else {
+            let html = `<h3>学习报告</h3>`;
+            html += `<p>初测得分：${questionBank.length - wrongIndices.length} / ${questionBank.length}</p>`;
+            html += `<p>已完成 ${wrongIndices.length} 个知识点的诊疗。</p>`;
+            
+            if (criticalFailures > 0) {
+                html += `<div style="background:#ffebee; padding:10px; border-left:4px solid red; margin-top:10px;">
+                            <strong>🚨 严重警报：</strong><br>有 ${criticalFailures} 个知识点在“分步拆解”后依然未掌握。请务必联系老师辅导！
+                         </div>`;
+            } else {
+                html += `<div style="background:#e8f5e9; padding:10px; border-left:4px solid green; margin-top:10px;">
+                            <strong>✅ 修复完成：</strong><br>所有盲区都已通过变式题修正。做得好！
+                         </div>`;
+            }
+            div.innerHTML = html;
+        }
+    }
+
+    // --- 工具函数 ---
+    function switchScene(id) {
+        document.querySelectorAll('.scene').forEach(e => e.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+    
+    function renderMath() {
+        if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) MathJax.typesetPromise();
+    }
+</script>
+
+</body>
+</html>

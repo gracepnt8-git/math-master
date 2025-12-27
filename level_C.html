@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C级特训：实际应用与综合压轴</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.bootcdn.net/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #880e4f; /* C级使用深酒红，代表高难挑战 */
+            --quiz: #0d47a1;    /* 测试区深蓝 */
+            --remedy: #e65100;  /* 补救橙 */
+            --deep: #212121;    /* 深度黑 */
+            --bg: #fce4ec;      /* 浅粉背景 */
+            --card: #ffffff;
+        }
+
+        body { font-family: 'Segoe UI', 'PingFang SC', sans-serif; background: var(--bg); margin: 0; padding: 20px; line-height: 1.6; color: #333; }
+        .container { max-width: 800px; margin: 0 auto; }
+        
+        /* 场景切换 */
+        .scene { display: none; animation: fadeIn 0.5s; }
+        .scene.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 卡片样式 */
+        .card { background: var(--card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        
+        h1, h2, h3 { margin-top: 0; color: #263238; }
+        
+        /* 按钮 */
+        .btn {
+            display: inline-block; padding: 12px 24px; border-radius: 6px; cursor: pointer; border: none; font-size: 1rem; color: white; transition: 0.2s;
+            width: 100%; text-align: left; margin-bottom: 10px;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary { background: var(--primary); text-align: center; font-weight: bold; width: auto; }
+        
+        .btn-opt { background: white; color: #333; border: 2px solid #bdbdbd; }
+        .btn-opt:hover { background: #f8bbd0; border-color: var(--primary); }
+        .btn-opt.selected { background: #f8bbd0; border-color: var(--primary); color: var(--primary); font-weight: bold; }
+        .disabled { pointer-events: none; opacity: 0.6; }
+
+        /* Phase 1 教学区 */
+        .study-header { border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 20px; }
+        .model-box { background: #fff9c4; border: 1px solid #fbc02d; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+        .model-title { font-weight: bold; color: #f57f17; margin-bottom: 5px; display: block; }
+
+        /* Phase 3 补救区 */
+        .remedy-header { background: #ffe0b2; color: #e65100; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ffcc80; }
+        .deep-dive-box {
+            display: none; background: #eceff1; border: 2px dashed var(--deep); padding: 15px; border-radius: 8px; margin-top: 15px; animation: slideDown 0.5s;
+        }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+        .step-item { margin-bottom: 8px; padding-left: 10px; border-left: 3px solid var(--deep); }
+
+        /* 进度条 */
+        .progress-bar { height: 8px; background: #e0e0e0; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--quiz); width: 0%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div id="scene-study" class="scene active">
+        <div class="card">
+            <div class="study-header">
+                <h1>C级：应用建模与压轴</h1>
+                <p>这一关是中考的决胜局。我们要学会把现实问题“翻译”成数学公式。</p>
+            </div>
+            
+            <div class="model-box">
+                <span class="model-title">模型1：利润最大化 (经商模型)</span>
+                <p><strong>公式：总利润 = 单件利润 $\times$ 销量</strong></p>
+                <p>设涨价/降价 $x$ 元：</p>
+                <ul>
+                    <li>单件利润 = (原售价 $\pm x$) - 进价</li>
+                    <li>销量 = 原销量 $\mp$ ($k \cdot x$)</li>
+                    <li>解析式：$y = (\text{新利}) \times (\text{新量})$</li>
+                </ul>
+            </div>
+
+            <div class="model-box" style="background: #e1f5fe; border-color: #039be5;">
+                <span class="model-title" style="color: #0277bd;">模型2：几何面积 (围篱笆模型)</span>
+                <p><strong>核心：利用周长关系表示边长</strong></p>
+                <ul>
+                    <li>若矩形周长固定：$y = x \cdot (\frac{C}{2} - x)$</li>
+                    <li><strong>靠墙陷阱：</strong> 墙那边不需要篱笆！<br>长 = 总长 - 2 $\times$ 宽 (设宽为x)</li>
+                </ul>
+            </div>
+
+            <div class="model-box" style="background: #f3e5f5; border-color: #8e24aa;">
+                <span class="model-title" style="color: #7b1fa2;">模型3：铅垂高法 (求不规则三角形面积)</span>
+                <p>在坐标系中求 $\triangle ABC$ 面积，通常做辅助线切割：</p>
+                <p>$$ S = \frac{1}{2} \times \text{水平宽} \times \text{铅垂高} $$</p>
+                <p><strong>水平宽：</strong> $|x_A - x_B|$<br><strong>铅垂高：</strong> 上方点纵坐标 - 下方点纵坐标</p>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%; margin-top:20px;" onclick="startQuiz()">我掌握了模型，开始挑战 ➡</button>
+        </div>
+    </div>
+
+    <div id="scene-quiz" class="scene">
+        <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span style="font-weight:bold; color:var(--quiz);">C级 建模测试</span>
+                <span id="quiz-progress-text">1 / 6</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" id="quiz-progress-fill"></div></div>
+
+            <h3 id="quiz-question-text">...</h3>
+            <div id="quiz-options-container"></div>
+            <button id="quiz-next-btn" class="btn btn-primary" style="margin-top:20px; display:none;">下一题</button>
+        </div>
+    </div>
+
+    <div id="scene-remedy" class="scene">
+        <div class="card" style="border-top: 5px solid var(--remedy);">
+            <div class="remedy-header">
+                <h3>⚠️ 建模逻辑诊断</h3>
+                <p>你在“翻译”题目条件时出现了偏差。我们来修正模型。</p>
+            </div>
+
+            <div style="margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:15px;">
+                <p><strong>❌ 原题回顾：</strong> <span id="remedy-original-question">...</span></p>
+                <div style="background:#fff3e0; padding:15px; border-radius:8px; color:#555;">
+                    <strong>📖 建模思路：</strong> <span id="remedy-explanation">...</span>
+                </div>
+            </div>
+
+            <h4 style="color:var(--remedy);">✍️ 变式挑战：</h4>
+            <p id="variant-question-text" style="font-weight:bold;">...</p>
+            <div id="variant-options-container"></div>
+            
+            <div id="deep-dive-box" class="deep-dive-box">
+                <h4 style="color:var(--deep); margin-top:0;">🚨 依然做错？启动【分步拆解】</h4>
+                <div id="deep-steps"></div>
+                <div style="margin-top:15px; text-align:right;">
+                    <button class="btn btn-primary" style="background:var(--deep); width:auto;" onclick="retryVariant()">🔄 重做此题</button>
+                </div>
+            </div>
+
+            <div id="variant-feedback" style="margin-top:15px; font-weight:bold; min-height:30px;"></div>
+            <button id="remedy-next-btn" class="btn btn-primary" style="margin-top:20px; display:none;" onclick="nextRemedyItem()">下一项诊断 ➡</button>
+        </div>
+    </div>
+
+    <div id="scene-result" class="scene">
+        <div class="card" style="text-align: center;">
+            <div style="font-size: 4em; margin-bottom: 10px;">🏆</div>
+            <h2>C级 压轴通关</h2>
+            <div id="result-details" style="text-align: left; margin: 20px 0; background: #f5f5f5; padding: 20px; border-radius: 8px;"></div>
+            <button class="btn btn-primary" onclick="location.reload()">再来一次</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // =========================================================
+    // C级核心题库：应用与压轴
+    // =========================================================
+    const questionBank = [
+        // 【C-01】利润问题：列式
+        {
+            id: "C-01", type: "main",
+            question: "某商品进价 40 元，售价 60 元，日销 300 件。经调查，售价每涨 1 元，日销减少 10 件。设涨价 $x$ 元，日总利润为 $y$，则 $y$ 与 $x$ 的关系式为？",
+            options: ["$y=(60+x)(300-10x)$", "$y=(20+x)(300-10x)$", "$y=(60+x-40)(300+10x)$", "$y=(20-x)(300+10x)$"],
+            correct: 1, 
+            remediation: {
+                explanation: "<strong>利润公式：</strong> 总利 = (售价-进价) × 销量。<br>1. 新售价：$60+x$；<br>2. 单件利：$(60+x) - 40 = 20+x$；<br>3. 新销量：$300 - 10x$。<br>相乘得：$y=(20+x)(300-10x)$。",
+                variant: {
+                    question: "进价30，售价50，销量100。降价1元，销量增5件。设降价x元，总利润y？",
+                    options: ["$y=(20-x)(100+5x)$", "$y=(50-x)(100+5x)$", "$y=(20+x)(100-5x)$", "$y=(50-x-30)(100-5x)$"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：算单件利润。原利 $50-30=20$。降价 $x$，所以是 $(20-x)$。",
+                    "第二步：算销量。原量100。降价促销，量增加，所以是 $(100+5x)$。",
+                    "第三步：两项相乘。$y=(20-x)(100+5x)$。"
+                ]
+            }
+        },
+        // 【C-02】利润问题：求最值
+        {
+            id: "C-02", type: "main",
+            question: "利润函数 $y = -10(x-15)^2 + 4000$，其中 $x$ 为涨价金额。要想获得最大利润，售价应定为多少？（原售价60元）",
+            options: ["15元", "60元", "75元", "4000元"],
+            correct: 2, 
+            remediation: {
+                explanation: "1. 这是一个顶点式，开口向下，有最大值。<br>2. 当 $x=15$ 时，利润最大。<br>3. 题目问的是<strong>售价</strong>，不是涨价金额。<br>4. 售价 = 原价 + 涨价 = $60 + 15 = 75$ 元。",
+                variant: {
+                    question: "若利润 $y = -2(x-10)^2 + 500$ ($x$为售价)，则最大利润时的售价是？",
+                    options: ["10元", "500元", "2元", "20元"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：看顶点。顶点横坐标是 $x=10$。",
+                    "第二步：看定义。题目直接说 $x$ 就是售价。",
+                    "第三步：所以当售价为 10 时，利润最大。"
+                ]
+            }
+        },
+        // 【C-03】几何应用：围篱笆 (靠墙)
+        {
+            id: "C-03", type: "main",
+            question: " 用长 20m 的篱笆围成一个一边靠墙的矩形，墙长足够。设垂直于墙的边长为 $x$，面积为 $y$，则？",
+            options: ["$y = x(20-x)$", "$y = x(20-2x)$", "$y = x(10-x)$", "$y = x(20-2x)/2$"],
+            correct: 1, 
+            remediation: {
+                explanation: "<strong>靠墙模型：</strong><br>1. 设宽(垂直墙)为 $x$。<br>2. 只有三条边：两个宽，一个长。<br>3. 长 = 总篱笆 - 2个宽 = $20 - 2x$。<br>4. 面积 = 长 $\\times$ 宽 = $x(20-2x)$。",
+                variant: {
+                    question: "若围成矩形且中间加一道隔板（不靠墙），总长20m，设宽x，面积y？",
+                    options: ["$y=x(20-2x)$", "$y=x(20-3x)$", "$y=x(20-3x)/2$", "$y=x(10-1.5x)$"],
+                    correct: 1
+                },
+                stepByStep: [
+                    "第一步：数边。两个外宽 + 一个中间隔板 = 3个宽($x$)。",
+                    "第二步：算长。长 = 总长 - 3个宽 = $20 - 3x$。",
+                    "第三步：算面积。$y = x(20 - 3x)$。"
+                ]
+            }
+        },
+        // 【C-04】铅垂高法求面积
+        {
+            id: "C-04", type: "main",
+            question: "抛物线 $y=x^2$ 与直线 $y=x+2$ 交于 $A(-1,1), B(2,4)$。点P在抛物线上且在直线下方。求 $\\triangle PAB$ 铅垂高 $h$ 最大时 P 的横坐标？",
+            options: ["0.5", "1", "0", "-0.5"],
+            correct: 0, 
+            remediation: {
+                explanation: "<strong>铅垂高最大原理：</strong><br>铅垂高 $h = y_{直线} - y_{抛物线} = (x+2) - x^2$。<br>这是一个开口向下的二次函数 $-x^2+x+2$。<br>对称轴 $x = -b/2a = -1 / (2 \\times -1) = 0.5$。",
+                variant: {
+                    question: "若铅垂高表达式为 $h = -2x^2 + 4x + 1$，则 $h$ 的最大值是？",
+                    options: ["1", "3", "2", "4"],
+                    correct: 1
+                },
+                stepByStep: [
+                    "第一步：求对称轴。$x = -4 / (2 \\times -2) = 1$。",
+                    "第二步：把 $x=1$ 代入表达式。",
+                    "第三步：$h = -2(1)^2 + 4(1) + 1 = -2 + 4 + 1 = 3$。"
+                ]
+            }
+        },
+        // 【C-05】抛物线中的直角三角形 (存在性)
+        {
+            id: "C-05", type: "main",
+            question: "已知 $A(-1,0), B(3,0)$。点 $P$ 在抛物线 $y=x^2-2x-3$ 上。若 $\\triangle PAB$ 是直角三角形，则这样的点 $P$ 有几个？",
+            options: ["2个", "3个", "4个", "6个"],
+            correct: 1, 
+            remediation: {
+                explanation: "<strong>分类讨论：</strong><br>1. $\\angle PAB=90^\\circ$：$P$在过$A$的垂线上 ($x=-1$)。代入抛物线求P坐标。<br>2. $\\angle PBA=90^\\circ$：$P$在过$B$的垂线上 ($x=3$)。<br>3. $\\angle APB=90^\\circ$：$P$在以$AB$为直径的圆与抛物线交点上。<br>本题特殊：$A,B$也是抛物线与x轴交点。$x=-1$时$y=0$(重合A,舍)；$x=3$时$y=0$(重合B,舍)。<br>剩下看圆：$AB$中点$(1,0)$，半径2。圆方程$(x-1)^2+y^2=4$。画图可知有3个交点。",
+                variant: {
+                    question: "简单点：若 $A(0,0)$，点P在 $y=x^2-2x$ 上，且 $\\angle PAO=90^\\circ$ (O为原点)，求P点坐标？",
+                    options: ["$(0,0)$", "$(2,0)$", "不存在", "$(0,-2)$"],
+                    correct: 2
+                },
+                stepByStep: [
+                    "第一步：$\\angle PAO=90^\\circ$ 意味着 $PA \\perp$ x轴。",
+                    "第二步：所以 P 点横坐标必须与 A 点相同，即 $x=0$。",
+                    "第三步：当 $x=0$ 时，代入抛物线 $y=0$。P点变成 $(0,0)$，与A点重合，无法构成三角形。所以不存在。"
+                ]
+            }
+        },
+        // 【C-06】实际应用：拱桥问题
+        {
+            id: "C-06", type: "main",
+            question: "一座拱桥呈抛物线形，跨度 40m，拱高 20m。以拱顶为原点建立坐标系，则抛物线解析式为？",
+            options: ["$y = -\\frac{1}{20}x^2$", "$y = -\\frac{1}{40}x^2$", "$y = -\\frac{1}{20}(x-20)^2$", "$y = -20x^2$"],
+            correct: 0, 
+            remediation: {
+                explanation: "1. 顶点为原点 $\\rightarrow y=ax^2$。<br>2. 开口向下 $\\rightarrow a<0$。<br>3. 跨度40m $\\rightarrow$ 左右各20m。所以经过点 $(20, -20)$。<br>4. 代入：$-20 = a \\times 20^2 \\rightarrow -20 = 400a \\rightarrow a = -1/20$。",
+                variant: {
+                    question: "若以左侧桥墩底部为原点，则顶点坐标是？",
+                    options: ["$(20, 20)$", "$(40, 20)$", "$(0, 20)$", "$(20, 0)$"],
+                    correct: 0
+                },
+                stepByStep: [
+                    "第一步：画图。桥跨度40，高20。",
+                    "第二步：定原点。左脚是 $(0,0)$。",
+                    "第三步：找顶点。水平方向走一半(20)，垂直方向走最高(20)。所以是 $(20, 20)$。"
+                ]
+            }
+        }
+    ];
+
+    // ================= 逻辑控制 (标准版) =================
+    let userAnswers = [];
+    let wrongIndices = [];
+    let currentQuizIndex = 0;
+    let currentRemedyIndex = 0;
+    let criticalFailures = 0;
+
+    function startQuiz() {
+        switchScene('scene-quiz');
+        loadQuizQuestion();
+    }
+
+    function loadQuizQuestion() {
+        const q = questionBank[currentQuizIndex];
+        document.getElementById('quiz-progress-text').innerText = `${currentQuizIndex + 1} / ${questionBank.length}`;
+        document.getElementById('quiz-progress-fill').style.width = `${((currentQuizIndex+1)/questionBank.length)*100}%`;
+        document.getElementById('quiz-question-text').innerHTML = q.question;
+        const container = document.getElementById('quiz-options-container');
+        container.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-opt';
+            btn.innerHTML = opt;
+            btn.onclick = () => selectQuizOption(idx, btn);
+            container.appendChild(btn);
+        });
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        renderMath();
+    }
+
+    function selectQuizOption(idx, btn) {
+        document.querySelectorAll('#quiz-options-container .btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        userAnswers[currentQuizIndex] = idx;
+        const nextBtn = document.getElementById('quiz-next-btn');
+        nextBtn.style.display = 'block';
+        if (currentQuizIndex === questionBank.length - 1) {
+            nextBtn.innerText = "提交试卷";
+            nextBtn.onclick = submitQuiz;
+        } else {
+            nextBtn.innerText = "下一题";
+            nextBtn.onclick = () => { currentQuizIndex++; loadQuizQuestion(); };
+        }
+    }
+
+    function submitQuiz() {
+        wrongIndices = [];
+        questionBank.forEach((q, idx) => {
+            if (userAnswers[idx] !== q.correct) wrongIndices.push(idx);
+        });
+        if (wrongIndices.length === 0) showResult(true);
+        else {
+            alert(`在建模与应用中有 ${wrongIndices.length} 个难点未攻克，进入智能修复。`);
+            startRemediation();
+        }
+    }
+
+    function startRemediation() {
+        currentRemedyIndex = 0;
+        criticalFailures = 0;
+        switchScene('scene-remedy');
+        loadRemedyItem();
+    }
+
+    function loadRemedyItem() {
+        const idx = wrongIndices[currentRemedyIndex];
+        const data = questionBank[idx];
+        document.getElementById('remedy-original-question').innerHTML = data.question;
+        document.getElementById('remedy-explanation').innerHTML = data.remediation.explanation;
+        document.getElementById('variant-question-text').innerHTML = data.remediation.variant.question;
+        document.getElementById('deep-dive-box').style.display = 'none';
+        document.getElementById('remedy-next-btn').style.display = 'none';
+        document.getElementById('variant-feedback').innerHTML = '';
+        renderVariantOptions(data, false);
+        renderMath();
+    }
+
+    function renderVariantOptions(data, isRetry) {
+        const container = document.getElementById('variant-options-container');
+        container.innerHTML = '';
+        data.remediation.variant.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-opt';
+            btn.innerHTML = opt;
+            btn.onclick = () => checkVariantAnswer(idx, btn, data, isRetry);
+            container.appendChild(btn);
+        });
+        renderMath();
+    }
+
+    function checkVariantAnswer(userIdx, btn, data, isRetry) {
+        const correctIdx = data.remediation.variant.correct;
+        const allBtns = document.querySelectorAll('#variant-options-container .btn');
+        allBtns.forEach(b => b.classList.add('disabled'));
+
+        if (userIdx === correctIdx) {
+            btn.style.backgroundColor = '#dcedc8'; btn.style.borderColor = '#2e7d32';
+            document.getElementById('variant-feedback').innerHTML = '<span style="color:green">✅ 建模成功！</span>';
+            document.getElementById('remedy-next-btn').style.display = 'inline-block';
+        } else {
+            btn.style.backgroundColor = '#ffcdd2'; btn.style.borderColor = '#c62828';
+            if (!isRetry) {
+                document.getElementById('variant-feedback').innerHTML = '<span style="color:#c62828">❌ 模型建立失败。请看下方的【分步拆解】。👇</span>';
+                showDeepDive(data);
+            } else {
+                criticalFailures++;
+                allBtns[correctIdx].style.backgroundColor = '#dcedc8';
+                document.getElementById('variant-feedback').innerHTML = '<span style="color:red">🆘 此类压轴题建议放弃或寻求老师一对一指导。</span>';
+                document.getElementById('remedy-next-btn').style.display = 'inline-block';
+            }
+        }
+    }
+
+    function showDeepDive(data) {
+        const box = document.getElementById('deep-dive-box');
+        const stepsDiv = document.getElementById('deep-steps');
+        stepsDiv.innerHTML = '';
+        data.remediation.stepByStep.forEach(step => {
+            const div = document.createElement('div');
+            div.className = 'step-item';
+            div.innerHTML = step;
+            stepsDiv.appendChild(div);
+        });
+        box.style.display = 'block';
+        renderMath();
+        box.scrollIntoView({behavior: "smooth"});
+    }
+
+    function retryVariant() {
+        const idx = wrongIndices[currentRemedyIndex];
+        const data = questionBank[idx];
+        document.getElementById('deep-dive-box').style.display = 'none';
+        document.getElementById('variant-feedback').innerHTML = '';
+        renderVariantOptions(data, true);
+    }
+
+    function nextRemedyItem() {
+        currentRemedyIndex++;
+        if (currentRemedyIndex < wrongIndices.length) loadRemedyItem();
+        else showResult(false);
+    }
+
+    function showResult(isPerfect) {
+        switchScene('scene-result');
+        const div = document.getElementById('result-details');
+        if (isPerfect) {
+            div.innerHTML = "<h3 style='color:green'>C级压轴制霸！🏆</h3><p>你已经具备了解答中考最后两道大题的建模能力！</p>";
+        } else {
+            let html = `<p>初测得分：${questionBank.length - wrongIndices.length} / ${questionBank.length}</p>`;
+            html += `<p>修复了 ${wrongIndices.length} 个建模漏洞。</p>`;
+            if (criticalFailures > 0) {
+                html += `<div style="background:#ffebee; padding:10px; border-left:4px solid red; margin-top:10px;"><strong>🚨 建议：</strong> 有 ${criticalFailures} 个压轴模型未掌握，建议复习一元二次方程应用题。</div>`;
+            } else {
+                html += `<div style="background:#e8f5e9; padding:10px; border-left:4px solid green; margin-top:10px;">✅ 所有模型已修正。</div>`;
+            }
+            div.innerHTML = html;
+        }
+    }
+
+    function switchScene(id) {
+        document.querySelectorAll('.scene').forEach(e => e.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+    
+    function renderMath() {
+        if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) MathJax.typesetPromise();
+    }
+</script>
+
+</body>
+</html>
